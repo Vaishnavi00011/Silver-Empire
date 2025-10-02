@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import Header from "../Components/Header";
 import Footer from "../Components/Footer";
 import rings from "../assets/Images/Mask group (5).png";
+import { Link } from "react-router-dom";
 
 const RingDetailPage = ({ ring }) => {
   const [quantity, setQuantity] = useState(1);
@@ -217,23 +218,23 @@ const scroll = (direction) => {
 
           {/* Add to Cart & Buy Now Buttons */}
           <div className="flex gap-3 mt-4">
+            <Link to={'/buy-now'}>
             <motion.button
-              onClick={handleBuyNow}
               whileHover={{ y: -2, boxShadow: "0px 6px 18px rgba(0,0,0,0.3)" }}
               whileTap={{ y: 1 }}
               className="px-5 py-2 bg-white text-black font-semibold rounded-full shadow-md relative overflow-hidden transition-all duration-300 border-2 border-black hover:bg-gray-100"
             >
               Buy Now
-            </motion.button>
-
+            </motion.button></Link>
+            
+            <Link to={"/add-cart"}>
             <motion.button
-              onClick={handleAddToCart}
               whileHover={{ y: -2, boxShadow: "0px 6px 18px rgba(0,0,0,0.3)" }}
               whileTap={{ y: 1 }}
               className="px-5 py-2 bg-gray-800 text-white font-semibold rounded-full shadow-md relative overflow-hidden transition-all duration-300 hover:bg-white hover:text-black"
             >
               Add to Cart
-            </motion.button>
+            </motion.button></Link>
           </div>
         </motion.div>
       </div>

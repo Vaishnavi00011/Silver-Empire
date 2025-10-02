@@ -10,27 +10,10 @@ import {
   FiMenu,
   FiX
 } from "react-icons/fi";
-import {
-  GiRing,
-  GiGemPendant,
-  GiNecklaceDisplay,
-  GiEarrings,
-  GiLinkedRings,
-} from "react-icons/gi";
 
 const Sidebar = () => {
   const [openProducts, setOpenProducts] = useState(false);
   const [isOpen, setIsOpen] = useState(true); // Sidebar open/close
-
-  const categories = [
-    { name: "Ring", path: "/products/ring", icon: <GiRing /> },
-    { name: "Pendant", path: "/products/pendant", icon: <GiGemPendant /> },
-    { name: "Mangalsutra", path: "/products/mangalsutra", icon: <GiLinkedRings /> },
-    { name: "Earring", path: "/products/earring", icon: <GiEarrings /> },
-    { name: "Chain", path: "/products/chain", icon: <GiNecklaceDisplay /> },
-    { name: "Bangle", path: "/products/bangle", icon: <GiLinkedRings /> },
-    { name: "Necklace", path: "/products/necklace", icon: <GiNecklaceDisplay /> },
-  ];
 
   return (
     <div
@@ -39,7 +22,7 @@ const Sidebar = () => {
       } h-screen bg-gray-900 text-white flex flex-col shadow-lg transition-all duration-300`}
     >
       {/* Header with Toggle and Admin Panel text */}
-      <div className="flex items-center px-6 py-6 border-b  border-gray-700">
+      <div className="flex items-center px-6 py-6 border-b border-gray-700">
         <button
           onClick={() => setIsOpen(!isOpen)}
           className="text-white text-xl focus:outline-none mr-3"
@@ -70,31 +53,32 @@ const Sidebar = () => {
           {openProducts ? <FiChevronUp /> : <FiChevronDown />}
         </button>
 
+        {/* Products Submenu (only Add + List) */}
         <div
           className={`overflow-hidden transition-all duration-500 ease-in-out ${
-            openProducts ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+            openProducts ? "max-h-40 opacity-100" : "max-h-0 opacity-0"
           }`}
         >
-          <div
-            className={`ml-4 mt-2 flex flex-col gap-2 ${
-              isOpen ? "bg-gradient-to-r from-gray-800 to-gray-900 rounded-lg p-3 shadow-inner" : ""
-            }`}
-          >
-            {categories.map((cat, i) => (
-              <Link
-                key={i}
-                to={cat.path}
-                className={`flex items-center gap-3 p-2 rounded-md transition-all duration-300 ${
-                  isOpen
-                    ? "hover:bg-indigo-600 hover:pl-4 border-l-4 border-transparent hover:border-indigo-400"
-                    : "justify-center"
-                }`}
-              >
-                <span className="text-lg">{cat.icon}</span>
-                {isOpen && <span className="text-sm font-medium">{cat.name}</span>}
-              </Link>
-            ))}
-          </div>
+          {isOpen && (
+            <ul className="ml-6 mt-2 flex flex-col gap-2 bg-gradient-to-r from-gray-800 to-gray-900 rounded-lg p-3 shadow-inner">
+              <li>
+                <Link
+                  to='/add-product'
+                  className="block p-2 rounded-md text-sm hover:bg-indigo-600"
+                >
+                  ➕ Add Product
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to='/product-list'
+                  className="block p-2 rounded-md text-sm hover:bg-indigo-600"
+                >
+                  📋 Product List
+                </Link>
+              </li>
+            </ul>
+          )}
         </div>
 
         {/* Orders */}

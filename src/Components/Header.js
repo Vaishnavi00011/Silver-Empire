@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Mic, User, Store, Heart, ShoppingBag, Menu, X, Diamond, Gem, Sparkles, Clock, Star, Gift } from 'lucide-react';
+import { Search, Mic, User, Store, Heart, ShoppingBag, Menu, X, Diamond, Gem, Sparkles, Clock, Star, Gift, LogIn } from 'lucide-react';
 import { motion, AnimatePresence } from "framer-motion";
 import Earing from "../assets/Images/Mask group (4).png";
 import Pendants from "../assets/Images/Mask group (7).png";
@@ -7,6 +7,8 @@ import Mangalsutra from "../assets/Images/50D3PTYKEAA29_1 1.png";
 import Rings from "../assets/Images/Mask group (5).png";
 import Logo from "../assets/Logo/PNG-01-01-e1741102611213 (1) 1.png"
 import { Link } from 'react-router-dom';
+import Login from "../Components/Login"
+
 
 const categories = [
   { 
@@ -119,6 +121,8 @@ const Header = () => {
   }, [allCategories.length, searchValue]);
 
   const toggleDropdown = () => setIsDropdownOpen(!isDropdownOpen);
+    const [open, setOpen] = useState(false);
+
 
   return (
     <>
@@ -167,10 +171,16 @@ const Header = () => {
           </div>
 
           <div className="flex items-center space-x-6">
-            <User size={22} className="cursor-pointer hover:text-gray-400" />
-            <Store size={22} className="cursor-pointer hover:text-gray-400" />
-            <Heart size={22} className="cursor-pointer hover:text-gray-400" />
-            <ShoppingBag size={22} className="cursor-pointer hover:text-gray-400" />
+            <User           
+            onClick={() => setOpen(true)}
+            size={22} className="cursor-pointer hover:text-gray-400" />
+            <Link to={'/our-store'}>
+            <Store size={22} className="cursor-pointer hover:text-gray-400" /></Link>
+            
+            <Link to={'/wish-list'}>
+            <Heart size={22} className="cursor-pointer hover:text-gray-400" /></Link>
+            <Link to={'/add-cart'}>
+            <ShoppingBag size={22} className="cursor-pointer hover:text-gray-400" /></Link>
           </div>
         </div>
 
@@ -249,6 +259,9 @@ const Header = () => {
           </div>
         </nav>
       </header>
+
+      {/* Modal */}
+      {open && <Login setOpen={setOpen} />}
 
       {/* ================= MOBILE HEADER ================= */}
       <div className="bg-gray-950 text-white md:hidden relative">

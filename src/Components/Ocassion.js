@@ -2,32 +2,31 @@ import React from "react";
 import { motion } from "framer-motion";
 import Gift from "../assets/Videos/4783592_Wedding_Rings_1920x1080.mp4";
 import DailyWear from "../assets/Videos/6763320-uhd_2160_3840_25fps.mp4";
+import { Link } from "react-router-dom";
 
 const OccasionPage = () => {
   return (
-    <div className="w-full min-h-screen font-sans overflow-hidden">
+    <div className="w-full mt-14 lg:mt-28 font-sans overflow-hidden">
       {/* Heading */}
       <motion.div
-        className="text-center py-10"
+        className="text-center py-8 sm:py-10 px-4"
         initial={{ opacity: 0, y: 20, rotateX: 15 }}
         animate={{ opacity: 1, y: 0, rotateX: 0 }}
         transition={{ duration: 1 }}
       >
-       
-
-        <h2 className="text-xl sm:text-2xl md:text-3xl font-serif font-semibold text-gray-800 mb-2">
+        <h1 className="text-2xl sm:text-3xl md:text-3xl font-serif font-semibold text-gray-800 mb-2">
           Silver Empire World
-</h2>
-<p className="text-sm sm:text-base md:text-lg font-serif text-gray-600">
+        </h1>
+        <p className="text-sm sm:text-base md:text-lg font-serif text-gray-600">
           A companion for every occasion
-</p>
+        </p>
       </motion.div>
 
-      {/* 2 Columns */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 px-6 md:px-16 pb-10">
-        {/* Gifts Section (Left) */}
+      {/* Responsive Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 px-4 sm:px-8 md:px-16 pb-10">
+        {/* Gifts Section */}
         <motion.div
-          className="relative w-full h-[90vh] rounded-2xl overflow-hidden  group cursor-pointer"
+          className="relative w-full h-[60vh] sm:h-[70vh] md:h-[90vh] rounded-2xl overflow-hidden group cursor-pointer"
           initial={{ x: "-100%", opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
           transition={{ duration: 1 }}
@@ -41,7 +40,7 @@ const OccasionPage = () => {
             muted
             playsInline
           />
-          {/* Gradient + Sparkle Overlay */}
+          {/* Gradient + Sparkle */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent">
             <div className="absolute w-full h-full pointer-events-none">
               {[...Array(20)].map((_, i) => (
@@ -58,31 +57,33 @@ const OccasionPage = () => {
             </div>
           </div>
 
-          {/* Button centered bottom */}
+          {/* Button */}
+          <Link to={"/gift"}>
           <motion.div
-            className="absolute bottom-10 left-1/2 transform -translate-x-1/2 flex justify-center"
+            className="absolute bottom-6 sm:bottom-8 left-1/2 transform -translate-x-1/2 flex justify-center"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 0.3 }}
           >
             <motion.button
-              className="relative flex items-center gap-3 px-8 py-3 border-2 border-white text-white font-semibold text-lg rounded-full overflow-hidden shadow-lg hover:shadow-[0_0_20px_#fff]"
+              className="relative flex items-center gap-2 sm:gap-3 px-6 sm:px-8 py-2 sm:py-3 border-2 border-white text-white font-semibold text-base sm:text-lg rounded-full overflow-hidden shadow-lg hover:shadow-[0_0_20px_#fff]"
               whileHover={{ scale: 1.1 }}
             >
-              <span className="relative z-10 animate-pulse text-lg md:text-xl">
+              <span className="relative z-10 animate-pulse text-base sm:text-lg md:text-xl">
                 Gifts
               </span>
-              <span className="relative z-10 text-2xl transition-transform duration-300 group-hover:translate-x-3">
+              <span className="relative z-10 text-xl sm:text-2xl transition-transform duration-300 group-hover:translate-x-3">
                 ➔
               </span>
               <span className="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 rounded-full"></span>
             </motion.button>
-          </motion.div>
+          </motion.div></Link>
         </motion.div>
 
-        {/* Daily Wear Section (Right) */}
+        {/* Daily Wear Section */}
+        <Link to={"/daily-wear"}>
         <motion.div
-          className="relative w-full h-[90vh] rounded-2xl overflow-hidden  group cursor-pointer"
+          className="relative w-full h-[60vh] sm:h-[70vh] md:h-[90vh] rounded-2xl overflow-hidden group cursor-pointer"
           initial={{ x: "100%", opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
           transition={{ duration: 1 }}
@@ -96,6 +97,7 @@ const OccasionPage = () => {
             muted
             playsInline
           />
+          {/* Gradient + Sparkle */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent">
             <div className="absolute w-full h-full pointer-events-none">
               {[...Array(20)].map((_, i) => (
@@ -112,27 +114,27 @@ const OccasionPage = () => {
             </div>
           </div>
 
-          {/* Button centered bottom */}
+          {/* Button */}
           <motion.div
-            className="absolute bottom-10 left-1/2 transform -translate-x-1/2 flex justify-center"
+            className="absolute bottom-6 sm:bottom-8 left-1/2 transform -translate-x-1/2 flex justify-center"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 0.5 }}
           >
             <motion.button
-              className="relative flex items-center gap-3 px-8 py-3 border-2 border-white text-white font-semibold text-lg rounded-full overflow-hidden shadow-lg hover:shadow-[0_0_20px_#fff]"
+              className="relative flex items-center gap-2 sm:gap-3 px-6 sm:px-8 py-2 sm:py-3 border-2 border-white text-white font-semibold text-base sm:text-lg rounded-full overflow-hidden shadow-lg hover:shadow-[0_0_20px_#fff]"
               whileHover={{ scale: 1.1 }}
             >
-              <span className="relative z-10 animate-pulse text-lg md:text-xl">
+              <span className="relative z-10 animate-pulse text-base sm:text-lg md:text-xl">
                 Daily Wear
               </span>
-              <span className="relative z-10 text-2xl transition-transform duration-300 group-hover:translate-x-3">
+              <span className="relative z-10 text-xl sm:text-2xl transition-transform duration-300 group-hover:translate-x-3">
                 ➔
               </span>
               <span className="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 rounded-full"></span>
             </motion.button>
           </motion.div>
-        </motion.div>
+        </motion.div></Link>
       </div>
 
       {/* Sparkle Keyframes */}

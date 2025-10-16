@@ -1,101 +1,136 @@
 import React, { useState, useEffect, useRef } from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import Banner1 from "../assets/Images/website banner 1.webp";
+import Banner2 from "../assets/Images/banner 2.webp";
+import Banner3 from "../assets/Images/banner 3.webp";
+import Banner4 from "../assets/Images/banner 4.webp";
 
-const images = [
-  "https://media.istockphoto.com/id/517188688/photo/mountain-landscape.jpg?s=1024x1024&w=0&k=20&c=z8_rWaI8x4zApNEEG9DnWlGXyDIXe-OmsAyQ5fGPVV8=",
-  "https://images.unsplash.com/photo-1506744038136-46273834b3fb",
-  "https://images.unsplash.com/photo-1529333166437-7750a6dd5a70",
-  "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee",
-];
+const images = [Banner1, Banner2, Banner3, Banner4];
 
 const Carousel = () => {
-  const [current, setCurrent] = useState(1); // start from 1 (because of clone)
-  const [isAnimating, setIsAnimating] = useState(true);
-  const slidesRef = useRef(null);
-
-  // Create clone array [last, ...images, first]
   const slides = [images[images.length - 1], ...images, images[0]];
+  const [current, setCurrent] = useState(1);
+  const [transition, setTransition] = useState(true);
+  const intervalRef = useRef(null);
 
-  // Auto slide
-  useEffect(() => {
-    const timer = setInterval(() => {
-      nextSlide();
-    }, 3000);
-    return () => clearInterval(timer);
-  }, [current]);
-
+  // ✅ Function to move next
   const nextSlide = () => {
-    setIsAnimating(true);
     setCurrent((prev) => prev + 1);
   };
 
+  // ✅ Function to move previous
   const prevSlide = () => {
-    setIsAnimating(true);
     setCurrent((prev) => prev - 1);
   };
 
-  // Handle transition end (for seamless infinite loop)
+  // ✅ Start auto sliding (always clean + restart)
+  const startAutoSlide = () => {
+    stopAutoSlide();
+    intervalRef.current = setInterval(() => {
+      setCurrent((prev) => prev + 1);
+    }, 4000);
+  };
+
+  // ✅ Stop auto sliding
+  const stopAutoSlide = () => {
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+  };
+
+  // ✅ Start again when component mounts or remounts
+  useEffect(() => {
+    startAutoSlide();
+    return () => stopAutoSlide(); // cleanup on unmount
+  }, []);
+
+  // ✅ Infinite Loop Handling
   const handleTransitionEnd = () => {
     if (current === slides.length - 1) {
-      // reached last clone → jump to real first
-      setIsAnimating(false);
+      setTransition(false);
       setCurrent(1);
-    }
-    if (current === 0) {
-      // reached first clone → jump to real last
-      setIsAnimating(false);
+    } else if (current === 0) {
+      setTransition(false);
       setCurrent(slides.length - 2);
     }
   };
 
+  // ✅ Re-enable transition after instant jump
+  useEffect(() => {
+    if (!transition) {
+      const timeout = setTimeout(() => setTransition(true), 30);
+      return () => clearTimeout(timeout);
+    }
+  }, [transition]);
+
+  // ✅ Reset on route revisit (prevents blank white issue)
+  useEffect(() => {
+    setCurrent(1);
+    setTransition(true);
+  }, []);
+
   return (
-    <div className="relative w-full overflow-hidden ">
-      {/* Images wrapper */}
+    <div
+      className="relative w-full overflow-hidden group"
+      onMouseEnter={stopAutoSlide}
+      onMouseLeave={startAutoSlide}
+    >
+      {/* Slides */}
       <div
-        ref={slidesRef}
-        className="flex"
+        className="flex w-full"
         style={{
           transform: `translateX(-${current * 100}%)`,
-          transition: isAnimating ? "transform 0.7s ease-in-out" : "none",
+          transition: transition ? "transform 0.7s ease-in-out" : "none",
         }}
         onTransitionEnd={handleTransitionEnd}
       >
-        {slides.map((img, index) => (
-          <div key={index} className="w-full flex-shrink-0 h-90">
-            <img
-              src={img}
-              alt={`slide-${index}`}
-              className="w-full h-80 object-cover"
-              loading="lazy"
-            />
+        {slides.map((img, idx) => (
+          <div key={idx} className="w-full flex-shrink-0">
+           <img
+  src={img}
+  alt={`slide-${idx}`}
+  className="w-full h-[50vh] mt-3 lg:mt-0 md:h-[70vh] lg:object-contain object cover bg-black rounded-xl md:rounded-none"
+/>
+
           </div>
         ))}
       </div>
 
       {/* Left Button */}
       <button
-        onClick={prevSlide}
-        className="absolute top-1/2 left-5 -translate-y-1/2 bg-black/50 text-white p-3 rounded-full hover:bg-black"
+        onClick={() => {
+          stopAutoSlide();
+          prevSlide();
+          startAutoSlide();
+        }}
+        className="absolute top-1/2 left-5 -translate-y-1/2 bg-black/50 text-white p-3 rounded-full hover:bg-black transition opacity-0 group-hover:opacity-100"
       >
-        <FaChevronLeft size={20} />
+        <FaChevronLeft size={22} />
       </button>
 
       {/* Right Button */}
       <button
-        onClick={nextSlide}
-        className="absolute top-1/2 right-5 -translate-y-1/2 bg-black/50 text-white p-3 rounded-full hover:bg-black"
+        onClick={() => {
+          stopAutoSlide();
+          nextSlide();
+          startAutoSlide();
+        }}
+        className="absolute top-1/2 right-5 -translate-y-1/2 bg-black/50 text-white p-3 rounded-full hover:bg-black transition opacity-0 group-hover:opacity-100"
       >
-        <FaChevronRight size={20} />
+        <FaChevronRight size={22} />
       </button>
 
-      {/* Dots Indicator */}
+      {/* Dots */}
       <div className="absolute bottom-5 left-1/2 -translate-x-1/2 flex gap-3">
-        {images.map((_, index) => (
+        {images.map((_, idx) => (
           <div
-            key={index}
-            onClick={() => setCurrent(index + 1)} // shift because of clone
-            className={`w-3 h-3 rounded-full cursor-pointer transition ${
-              current === index + 1 ? "bg-white scale-125" : "bg-gray-400"
+            key={idx}
+            onClick={() => setCurrent(idx + 1)}
+            className={`w-3 h-3 rounded-full cursor-pointer transition-all ${
+              current === idx + 1
+                ? "bg-white scale-125"
+                : "bg-gray-400 hover:bg-gray-300"
             }`}
           ></div>
         ))}

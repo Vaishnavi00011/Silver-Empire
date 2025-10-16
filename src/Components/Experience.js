@@ -1,8 +1,8 @@
 import React from "react";
 import { motion } from "framer-motion";
-import watsapp1 from "../assets/Images/WhatsApp Image 2025-07-19 at 01.11.44 (1) 1.png";
-import watsapp2 from "../assets/Images/WhatsApp Image 2025-07-19 at 01.11.44 1.png";
-import watsapp3 from "../assets/Images/WhatsApp Image 2025-07-19 at 01.11.45 1.png";
+import watsapp1 from "../assets/Images/WhatsApp Image 2025-07-19 at 01.11.44 (1) 1.webp";
+import watsapp2 from "../assets/Images/WhatsApp Image 2025-07-19 at 01.11.44 1.webp";
+import watsapp3 from "../assets/Images/WhatsApp Image 2025-07-19 at 01.11.45 1.webp";
 
 const images = {
   mainBuilding: watsapp3,
@@ -12,12 +12,12 @@ const images = {
 
 const SilverEmpireExperience = () => {
   return (
-    <section className="py-20 px-4 sm:px-6 bg-white font-sans">
+    <section className="mt-14 lg:mt-28 px-4 sm:px-6 bg-white font-sans">
       {/* Desktop Section */}
       <div className="hidden md:block">
-        <h2 className="text-2xl sm:text-3xl md:text-3xl font-serif font-semibold text-center mb-8 text-gray-900 leading-snug">
-  Silver Empire Experience
-</h2>
+        <h1 className="text-2xl sm:text-3xl md:text-3xl font-serif font-semibold text-center  text-gray-900 leading-snug">
+Step Into the Shine</h1>
+<p className="mb-8 mt-2 text-center justify-center font-serif text-gray-600">A journey through artistry and allure</p>
 
 
         <div className="max-w-7xl mx-auto grid grid-cols-2 gap-10 items-stretch">
@@ -71,9 +71,10 @@ const SilverEmpireExperience = () => {
 
       {/* Mobile Section */}
       <div className="md:hidden">
-        <h2 className="text-2xl sm:text-3xl md:text-3xl font-serif font-semibold text-center mb-6 text-gray-900 leading-snug">
-  Silver Empire Experience
-</h2>
+        <h1 className="text-2xl sm:text-3xl md:text-3xl font-serif font-semibold text-center  text-gray-900 leading-snug">
+Step Into the Shine</h1>
+<p className="mb-8 mt-2 text-center justify-center text-sm font-serif text-gray-600">A journey through artistry and allure</p>
+
 
 
         <div className="flex flex-col gap-4">

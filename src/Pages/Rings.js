@@ -1,20 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import { motion } from "framer-motion";
-import ring from "../assets/Images/Mask group (5).png";
-import ring2 from "../assets/Images/2.png";
-import ring3 from "../assets/Images/1.svg";
-import ring4 from "../assets/Images/3.svg";
 import Header from "../Components/Header";
 import Footer from "../Components/Footer";
 import banner from "../assets/Images/jewellry proposal_20250926_223349_0000.png";
 import { Link } from "react-router-dom";
-
-const rings = [
-  { id: 1, name: "Classic Silver Ring", price: "₹2,500", metal: "Silver", image: ring },
-  { id: 2, name: "Elegant Silver Ring", price: "₹3,200", metal: "Silver", image: ring2 },
-  { id: 3, name: "Modern Silver Ring", price: "₹2,800", metal: "Silver", image: ring3 },
-  { id: 4, name: "Vintage Silver Ring", price: "₹3,500", metal: "Silver", image: ring4 },
-];
 
 const filterOptions = {
   "Product type": ["Ring", "Earring", "Necklace", "Bracelet"],
@@ -28,6 +18,27 @@ const filterOptions = {
 
 const RingsCollection = () => {
   const [openDropdown, setOpenDropdown] = useState(null);
+  const [rings, setRings] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch products from API
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await axios.get("http://91.108.105.41:8000/api/products/");
+        const onlyRings = response.data.results.filter(
+          (product) => product.category_name === "Ring"
+        );
+        setRings(onlyRings);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching rings:", error);
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
 
   const toggleDropdown = (name) => {
     setOpenDropdown(openDropdown === name ? null : name);
@@ -37,22 +48,24 @@ const RingsCollection = () => {
     console.log(`Selected ${option} for ${filter}`);
     setOpenDropdown(null);
   };
+  
 
   return (
-    <div className="bg-white font-sans">
+    <div className="bg-white font-sans min-h-screen">
       <Header />
 
       {/* Banner */}
       <div className="w-full h-48 sm:h-72 md:h-96 lg:h-[450px] relative overflow-hidden rounded-b-3xl">
         <img
-          src={banner}
+          src=""
           alt="Jewellery Banner"
           className="w-full h-full object-cover"
         />
       </div>
 
       {/* Filter Section */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 mb-6 flex flex-col md:flex-row items-start md:items-center justify-start md:justify-between gap-3 bg-white rounded-lg shadow-sm">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 mb-6 flex flex-col md:flex-row items-start md:items-center justify-start md:justify-between gap-3 bg-white rounded-lg shadow-sm border border-gray-100">
+        {/* Filter Buttons */}
         <div className="flex flex-wrap items-start gap-2 md:gap-4 text-gray-800 font-medium">
           {Object.keys(filterOptions).map((filter) => (
             <div key={filter} className="relative">
@@ -80,6 +93,7 @@ const RingsCollection = () => {
           ))}
         </div>
 
+        {/* Sort Dropdown */}
         <div className="flex items-center gap-2 text-gray-800 font-medium mt-2 md:mt-0 text-xs sm:text-sm">
           <span>Sort by:</span>
           <select className="border border-gray-300 rounded-md px-2 py-1 hover:border-gray-500 transition text-xs sm:text-sm">
@@ -91,50 +105,86 @@ const RingsCollection = () => {
         </div>
       </div>
 
-      {/* Cards Grid */}
-      <Link to={"/rings-product"}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 
-                        grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+      {/* Product Cards Grid */}
+      {loading ? (
+        <div className="text-center py-10 text-gray-600">Loading products...</div>
+      ) : rings.length === 0 ? (
+        <div className="text-center py-10 text-gray-600">No products found.</div>
+      ) : (
+        <div
+          className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 
+          grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6"
+        >
           {rings.map((ring, index) => (
             <motion.div
               key={ring.id}
-              initial={{ opacity: 0, y: 50 }}
+              className="border border-gray-300 rounded-lg overflow-hidden bg-white text-black shadow-sm hover:shadow-md transition-shadow"
+              initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: false, amount: 0.2 }}
+              viewport={{ once: true, amount: 0.2 }}
               transition={{ duration: 0.6, delay: index * 0.1 }}
-              className="text-black border border-gray-200 rounded-xl shadow-md overflow-hidden flex flex-col bg-white"
             >
-              {/* Responsive Image height */}
-              <div className="h-40 sm:h-56 md:h-64 overflow-hidden">
+              {/* Image */}
+              <div className="w-full h-64 overflow-hidden relative">
                 <img
-                  src={ring.image}
+                  src={
+                    ring.primary_image && ring.primary_image.image
+                      ? `http://91.108.105.41:8000${ring.primary_image.image}`
+                      : "/fallback-image.png"
+                  }
                   alt={ring.name}
-                  className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+                  className="w-full h-full object-cover transform hover:scale-105 transition-transform duration-300"
                 />
+
+                {/* Discount Badge */}
+                {ring.discount_percentage > 0 && (
+                  <span className="absolute top-2 left-2 bg-red-600 text-white text-xs px-2 py-1 rounded">
+                    {ring.discount_percentage.toFixed(0)}% OFF
+                  </span>
+                )}
               </div>
 
-              {/* Responsive Text */}
-              <div className="p-3 sm:p-4 flex flex-col flex-1 justify-between">
-                <div className="flex justify-between items-center">
-                  <span className="font-medium text-xs sm:text-sm md:text-base">
-                    {ring.metal}
-                  </span>
-                  <span className="font-bold text-xs sm:text-sm md:text-base">
-                    {ring.price}
-                  </span>
+              {/* Card Content */}
+              <div className="p-3 flex flex-col justify-between h-32">
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-1">
+                  <h3 className="font-semibold text-gray-900 text-sm sm:text-base line-clamp-1">
+                    {ring.name}
+                  </h3>
+                  <div className="flex items-center gap-2 mt-1 sm:mt-0">
+                    <span className="font-bold text-gray-900 text-sm sm:text-base">
+                      ₹{ring.current_price}
+                    </span>
+                    {parseFloat(ring.base_price) > ring.current_price && (
+                      <span className="text-gray-500 text-xs sm:text-sm line-through">
+                        ₹{ring.base_price}
+                      </span>
+                    )}
+                  </div>
                 </div>
-                <h3 className="text-sm sm:text-base md:text-sm font-semibold mt-2">
-                  {ring.name}
-                </h3>
 
-                <button className="mt-3 sm:mt-4 px-3 py-1.5 sm:px-4 sm:py-2 bg-black text-white text-xs sm:text-sm font-medium rounded-lg hover:bg-gray-900 transition">
-                  Add to Cart
-                </button>
+                <p className="text-gray-600 text-xs sm:text-sm mb-3 line-clamp-2">
+                  {ring.short_description || "Elegant jewellery to enhance your style."}
+                </p>
+
+<Link
+  to={`/product/${ring.id}`}
+  state={{ primaryImage: ring.primary_image }}  // <-- भेज रहे हैं primary image
+>
+  <button
+    className="w-full bg-black text-white text-sm px-2 py-2 rounded-md hover:bg-gray-800 transition"
+    onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+  >
+    View Details
+  </button>
+</Link>
+
+
+
               </div>
             </motion.div>
           ))}
         </div>
-      </Link>
+      )}
 
       <Footer />
     </div>

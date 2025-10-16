@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { FaMapMarkerAlt, FaPhoneAlt, FaClock, FaStoreAlt } from "react-icons/fa";
+import React, { useState, useRef, useEffect } from "react";
+import { FaMapMarkerAlt, FaPhoneAlt, FaClock, FaStoreAlt, FaChevronDown, FaChevronUp } from "react-icons/fa";
 import Header from "../Components/Header";
 import Footer from "../Components/Footer";
 
@@ -30,71 +30,94 @@ const stores = [
   },
 ];
 
-const OurStorePage = () => {
-  const [selectedStoreId, setSelectedStoreId] = useState("");
+const CustomDropdown = ({ options, selected, setSelected }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const ref = useRef();
 
-  const selectedStore = stores.find((store) => store.id === Number(selectedStoreId));
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (ref.current && !ref.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   return (
-    <div className=" min-h-screen">
+    <div ref={ref} className="relative w-full max-w-xs sm:max-w-sm">
+      <div
+        className="cursor-pointer flex justify-between items-center p-3 sm:p-4 rounded-2xl border border-gray-300 shadow-md bg-white"
+        onClick={() => setIsOpen(!isOpen)}
+      >
+        <span className={selected ? "text-gray-800 font-medium" : "text-gray-400"}>
+          {selected ? options.find((o) => o.id === selected).name : "Select Your Store"}
+        </span>
+        {isOpen ? <FaChevronUp /> : <FaChevronDown />}
+      </div>
+      {isOpen && (
+        <ul className="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-2xl shadow-lg max-h-60 overflow-y-auto">
+          {options.map((option) => (
+            <li
+              key={option.id}
+              className="p-3 sm:p-4 cursor-pointer hover:bg-gray-100 text-sm sm:text-base"
+              onClick={() => {
+                setSelected(option.id);
+                setIsOpen(false);
+              }}
+            >
+              {option.name}
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+};
+
+const OurStorePage = () => {
+  const [selectedStoreId, setSelectedStoreId] = useState(null);
+  const selectedStore = stores.find((store) => store.id === selectedStoreId);
+
+  return (
+    <div className="min-h-screen flex flex-col">
       <Header />
+      <main className="flex-1 max-w-6xl mx-auto p-6 sm:p-8">
+        <h1 className="flex  sm:flex-row items-center justify-center font-serif gap-3 text-2xl sm:text-4xl font-semibold mb-4 text-gray-900 tracking-tight">
+          Explore Our Stores
+          <FaStoreAlt className="text-black text-2xl sm:text-4xl" />
+        </h1>
 
-      <div className="max-w-6xl mx-auto p-6">
-        {/* Stylish Heading */}
-<h1 className="flex items-center justify-center gap-3 text-3xl sm:text-4xl font-extrabold mb-6 text-gray-900 tracking-wide">
-      Explore Our Stores
-
-  <FaStoreAlt className="text-black text-3xl" />
-</h1>
-        <p className="text-center text-gray-600 mb-10 text-lg">
+        <p className="text-center text-gray-600 font-serif mb-10 text-sm sm:text-lg">
           Choose your nearest store to see location and details
         </p>
 
-        {/* Store Selector */}
         <div className="flex justify-center mb-12">
-          <select
-            value={selectedStoreId}
-            onChange={(e) => setSelectedStoreId(e.target.value)}
-            className="p-3 sm:p-4 rounded-2xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-black shadow-md transition w-full sm:w-72 text-gray-700 font-medium"
-          >
-            <option value="">Select Your Store</option>
-            {stores.map((store) => (
-              <option key={store.id} value={store.id}>
-                {store.name}
-              </option>
-            ))}
-          </select>
+          <CustomDropdown options={stores} selected={selectedStoreId} setSelected={setSelectedStoreId} />
         </div>
 
-        {/* Store Card */}
         {selectedStore && (
           <div className="bg-white rounded-3xl shadow-xl overflow-hidden hover:shadow-2xl transition duration-300">
-            <div className="md:flex md:gap-8 p-6">
-              {/* Store Info */}
+            <div className="flex flex-col md:flex-row md:gap-8 p-6 sm:p-8">
               <div className="flex-1 flex flex-col gap-4">
-                <h2 className="text-2xl font-bold text-gray-900">{selectedStore.name}</h2>
-
-                <div className="flex items-center gap-3 text-gray-700">
-                  <FaMapMarkerAlt className="text-red-500 text-xl" />
-                  <span className="text-md sm:text-lg">{selectedStore.address}</span>
+                <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">{selectedStore.name}</h2>
+                <div className="flex items-center gap-3 text-gray-700 text-sm sm:text-base">
+                  <FaMapMarkerAlt className="text-red-500 text-lg sm:text-xl" />
+                  <span>{selectedStore.address}</span>
                 </div>
-
-                <div className="flex items-center gap-3 text-gray-700">
-                  <FaPhoneAlt className="text-green-500 text-xl" />
-                  <span className="text-md sm:text-lg">{selectedStore.phone}</span>
+                <div className="flex items-center gap-3 text-gray-700 text-sm sm:text-base">
+                  <FaPhoneAlt className="text-green-500 text-lg sm:text-xl" />
+                  <span>{selectedStore.phone}</span>
                 </div>
-
-                <div className="flex items-center gap-3 text-gray-700">
-                  <FaClock className="text-blue-500 text-xl" />
-                  <span className="text-md sm:text-lg">{selectedStore.timings}</span>
+                <div className="flex items-center gap-3 text-gray-700 text-sm sm:text-base">
+                  <FaClock className="text-blue-500 text-lg sm:text-xl" />
+                  <span>{selectedStore.timings}</span>
                 </div>
               </div>
-
-              {/* Map */}
               <div className="mt-6 md:mt-0 md:flex-1">
                 <iframe
                   src={selectedStore.mapEmbed}
-                  className="w-full h-72 md:h-80 rounded-2xl shadow-lg border-0"
+                  className="w-full h-72 sm:h-80 md:h-96 rounded-2xl shadow-lg border-0"
                   allowFullScreen=""
                   loading="lazy"
                   title={selectedStore.name}
@@ -103,8 +126,7 @@ const OurStorePage = () => {
             </div>
           </div>
         )}
-      </div>
-
+      </main>
       <Footer />
     </div>
   );

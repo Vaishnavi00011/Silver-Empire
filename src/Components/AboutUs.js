@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import maskGroup from "../assets/Images/Mask group.png";
-import maskGroup1 from "../assets/Images/Mask group (1).png";
-import maskGroup2 from "../assets/Images/Mask group (2).png";
+import maskGroup from "../assets/Images/Mask group.webp";
+import maskGroup1 from "../assets/Images/Mask group (1).webp";
+import maskGroup2 from "../assets/Images/Mask group (2).webp";
 
 // Testimonial Card
 const TestimonialCard = ({ imageSrc, testimonialText, customerName }) => {
@@ -51,12 +51,12 @@ const DesktopTestimonials = () => {
   ];
 
   return (
-    <div className='hidden lg:flex flex-col '>
-   <h2 className="text-lg sm:text-xl md:text-2xl font-serif font-semibold text-center text-gray-900 leading-snug tracking-wide">
-  What Customers Think About Us
-</h2>
+    <div className='hidden lg:mt-28 mt-14 lg:flex flex-col '>
+   <h1 className="text-lg sm:text-xl md:text-2xl font-serif font-semibold text-center text-gray-900 leading-snug tracking-wide">
+     Real People, Real Sparkle
+     </h1>
 
-    
+    <p className='text-gray-600 text-center justify-center font-serif mt-2'>Because every Silver piece begins and ends with your smile</p>
     <div className="hidden sm:flex py-10 px-4 bg-white font-sans">
  
       <div className="w-full relative max-w-6xl mx-auto flex items-center justify-center">
@@ -120,9 +120,10 @@ const MobileTestimonials = () => {
 
   return (
     <div className="sm:hidden py-16 px-4 bg-white font-sans">
-  <h2 className="text-lg sm:text-xl md:text-2xl font-serif font-semibold text-center mb-4 sm:mb-6 text-gray-900 leading-snug tracking-wide">
-  What Customers Think About Us
-</h2>
+  <h1 className="text-2xl sm:text-xl md:text-2xl font-serif font-semibold text-center mb-4 sm:mb-6 text-gray-900 leading-snug tracking-wide">
+     Real People, Real Sparkle
+</h1>
+<p className='text-gray-600 text-sm text-center justify-center font-serif  mb-2'>Because every Silver piece begins and ends with your smile</p>
 
 
 

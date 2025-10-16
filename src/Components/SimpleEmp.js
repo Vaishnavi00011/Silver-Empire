@@ -1,12 +1,13 @@
 import React from "react";
 import { motion } from "framer-motion";
-import Nacklace from "../assets/Images/3pcs Luxury Black Teardrop Earrings & Necklace Set For Women, Gorgeous Jewelry Set For Banquet And Wedding 1.png";
-import Harry from "../assets/Images/💎Harry Winston💎 1 (1).png";
+import Nacklace from "../assets/Images/3pcs Luxury Black Teardrop Earrings & Necklace Set For Women, Gorgeous Jewelry Set For Banquet And Wedding 1 (1).webp";
+import Harry from "../assets/Images/💎Harry Winston💎 1 (1).webp";
+import { Link } from "react-router-dom";
 
 const SilverEmpireCollectionFinal = ({ necklaceImagePath, earringImagePath }) => {
   return (
     // Outer container
-    <div className="flex justify-center items-center p-6 sm:p-8 min-h-screen">
+    <div className="flex justify-center items-center lg:mt-28 mt-14  ">
       {/* === Main Card Container === */}
       <motion.div
         className="max-w-5xl w-full bg-white flex flex-col md:flex-row md:items-stretch gap-4 sm:gap-6 md:gap-8"
@@ -25,7 +26,7 @@ const SilverEmpireCollectionFinal = ({ necklaceImagePath, earringImagePath }) =>
           <img
             src={necklaceImagePath || Nacklace}
             alt="Model wearing Silver Empire Necklace Set"
-            className="w-full h-[250px] sm:h-[350px] md:h-full object-cover rounded-t-xl md:rounded-l-xl md:rounded-tr-none shadow-2xl"
+            className="w-full h-[250px] sm:h-[350px] md:h-full object-cover rounded-t-xl md:rounded-l-2xl md:rounded-r-2xl shadow-2xl"
           />
         </motion.div>
 
@@ -53,7 +54,8 @@ const SilverEmpireCollectionFinal = ({ necklaceImagePath, earringImagePath }) =>
           </h3>
 
           {/* Shop Now Button */}
-          <motion.button
+          <Link to={"/collection"}>         
+           <motion.button
             whileHover={{ scale: 1.08 }}
             whileTap={{ scale: 0.95 }}
             className="relative overflow-hidden bg-gradient-to-r from-gray-900 via-black to-gray-900 
@@ -63,7 +65,8 @@ const SilverEmpireCollectionFinal = ({ necklaceImagePath, earringImagePath }) =>
             <span className="relative z-10">Shop Now</span>
             <span className="absolute inset-0 bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 
                              opacity-0 hover:opacity-30 transition duration-500 rounded-full" />
-          </motion.button>
+          </motion.button></Link>
+
         </motion.div>
 
         {/* === Right: Earring + Price === */}

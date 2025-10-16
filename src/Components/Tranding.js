@@ -1,19 +1,9 @@
-import React, { useRef, useEffect } from "react";
-import Earing from "../assets/Images/5 1.png";
-import Earing2 from "../assets/Images/11 1.png";
-import Earing3 from "../assets/Images/13 1.png";
-import Earing4 from "../assets/Images/15 1.png";
-
-const products = [
-  { id: 1, imageUrl: Earing, label: "Trending" },
-  { id: 2, imageUrl: Earing2, label: "Collection" },
-  { id: 3, imageUrl: Earing3, label: "Trending" },
-  { id: 4, imageUrl: Earing4, label: "Collection" },
-];
+import React, { useRef, useEffect, useState } from "react";
+import axios from "axios";
 
 // ================= Desktop Product Card =================
 const DesktopProductCard = ({ imageUrl, label }) => (
-  <div className="flex-shrink-0 w-64 p-2">
+  <div className="flex-shrink-0 w-1/5 p-2"> {/* 5 per view -> 1/5 */}
     <div className="w-full overflow-hidden rounded-lg shadow-lg aspect-[3/4]">
       <img
         src={imageUrl}
@@ -40,23 +30,43 @@ const MobileProductCard = ({ imageUrl, label }) => (
 );
 
 const TrendingJewellery = () => {
+  const [products, setProducts] = useState([]);
   const desktopRef = useRef(null);
   const mobileRef = useRef(null);
 
-  const desktopCardWidth = 256; // px -> lg:w-64
   const speed = 3000; // 3 sec
+
+  // ===== Fetch API =====
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const res = await axios.get("http://91.108.105.41:8000/api/products/featured/");
+        const featured = res.data.results.map((item) => ({
+          id: item.id,
+          imageUrl: `http://91.108.105.41:8000${item.primary_image.image}`,
+          label: item.category_name || item.name,
+        }));
+        setProducts(featured);
+      } catch (error) {
+        console.error("Error fetching featured products:", error);
+      }
+    };
+    fetchProducts();
+  }, []);
 
   const extendedProducts = [...products, ...products];
 
   // ===== Desktop Carousel =====
   useEffect(() => {
+    if (products.length === 0) return;
     let index = 0;
     const container = desktopRef.current;
+    const cardWidth = container.querySelector("div")?.offsetWidth || 256;
 
     const interval = setInterval(() => {
       index += 1;
       container.style.transition = "transform 0.7s ease-in-out";
-      container.style.transform = `translateX(-${index * desktopCardWidth}px)`;
+      container.style.transform = `translateX(-${index * cardWidth}px)`;
 
       if (index >= products.length) {
         setTimeout(() => {
@@ -68,10 +78,11 @@ const TrendingJewellery = () => {
     }, speed);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [products]);
 
   // ===== Mobile/Tablet Carousel =====
   useEffect(() => {
+    if (products.length === 0) return;
     let index = 0;
     const container = mobileRef.current;
 
@@ -93,23 +104,22 @@ const TrendingJewellery = () => {
     }, speed);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [products]);
 
   return (
-    <div className="py-12 px-4 sm:px-6 lg:px-8 bg-white">
+    <div className="sm:px-6 mt-14 lg:mt-28 lg:px-8">
       {/* Header */}
       <div className="text-center mb-10">
-       <h1 className="text-2xl sm:text-3xl md:text-3xl font-serif font-semibold text-gray-800 tracking-wide mb-2">
-  Trending Now
-</h1>
-<p className="text-sm sm:text-base md:text-base font-serif text-gray-600">
-  Jewellery pieces everyone's eyeing right now
-</p>
-
+        <h1 className="text-2xl sm:text-3xl md:text-3xl font-serif font-semibold text-gray-800 tracking-wide mb-2">
+          Trending Now
+        </h1>
+        <p className="text-sm sm:text-base md:text-base font-serif text-gray-600">
+          Jewellery pieces everyone's eyeing right now
+        </p>
       </div>
 
       {/* ===== Desktop Carousel ===== */}
-      <div className="hidden lg:block overflow-hidden max-w-[1024px] mx-auto">
+      <div className="hidden lg:block overflow-hidden max-w-[1275px] mx-auto">
         <div ref={desktopRef} className="flex">
           {extendedProducts.map((product, idx) => (
             <DesktopProductCard

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import Header from '../Components/Header'
 import Intro from '../Components/Intro'
 import Footer from '../Components/Footer'
@@ -11,22 +11,26 @@ import Experience from '../Components/Experience'
 import Jwellary from '../Components/Jwellary'
 import Ocassion from '../Components/Ocassion'
 import VirtualStyling from '../Components/VirtualStyling'
+import Preloader from '../Components/Preloader' // ye component aapko pehle banana hoga
 
 function Home() {
+
+ 
+
   return (
-    <div className=''> 
-        <Header></Header>
-         <Intro></Intro> 
-        <MostPopular></MostPopular>
-        <SimpleEmp></SimpleEmp>
-        <Categories></Categories>
-        <Ocassion></Ocassion>
-        <Tranding></Tranding>
-        <VirtualStyling></VirtualStyling>
-         <Jwellary></Jwellary>
-         <AboutUs></AboutUs>
-        <Experience></Experience>
-        <Footer></Footer>
+    <div className='overflow-x-hidden'> 
+        <Header />
+        <Intro /> 
+        <MostPopular />
+        <SimpleEmp />
+        <Categories />
+        <Ocassion />
+        <Tranding />
+        <VirtualStyling />
+        <Jwellary />
+        <AboutUs />
+        <Experience />
+        <Footer />
     </div>
   )
 }

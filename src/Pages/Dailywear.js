@@ -1,15 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import axios from "axios";
 import Header from "../Components/Header";
 import Footer from "../Components/Footer";
 import { Link } from "react-router-dom";
-
-const dailyWearItems = [
-  { id: 1, name: "Daily Wear Silver Ring", price: "₹1,500", metal: "Silver", image: "" },
-  { id: 2, name: "Daily Wear Gold Earrings", price: "₹2,000", metal: "Gold", image: "" },
-  { id: 3, name: "Daily Wear Bracelet", price: "₹1,800", metal: "Rose Gold", image: "" },
-  { id: 4, name: "Daily Wear Necklace", price: "₹2,500", metal: "Silver", image: "" },
-];
 
 const filterOptions = {
   "Product type": ["Ring", "Earring", "Necklace", "Bracelet"],
@@ -23,6 +17,8 @@ const filterOptions = {
 
 const DailyWearCollection = () => {
   const [openDropdown, setOpenDropdown] = useState(null);
+  const [dailyWearItems, setDailyWearItems] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const toggleDropdown = (name) => {
     setOpenDropdown(openDropdown === name ? null : name);
@@ -32,6 +28,29 @@ const DailyWearCollection = () => {
     console.log(`Selected ${option} for ${filter}`);
     setOpenDropdown(null);
   };
+
+  // 🟢 Fetch only "Daily Wear" category items from API
+  useEffect(() => {
+    const fetchDailyWear = async () => {
+      try {
+        const res = await axios.get("http://91.108.105.41:8000/api/products/");
+        const allProducts = res.data.results;
+
+        // Filter only "Daily Wear" items
+        const filtered = allProducts.filter(
+          (item) => item.category_name?.toLowerCase() === "daily wear"
+        );
+
+        setDailyWearItems(filtered);
+      } catch (error) {
+        console.error("Error fetching Daily Wear products:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDailyWear();
+  }, []);
 
   return (
     <div className="bg-white font-sans">
@@ -83,44 +102,72 @@ const DailyWearCollection = () => {
       </div>
 
       {/* Cards Grid */}
-      <Link to={"/daily-wear-product"}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 
-                        grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
-          {dailyWearItems.map((item, index) => (
-            <motion.div
-              key={item.id}
-              initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: false, amount: 0.2 }}
-              transition={{ duration: 0.6, delay: index * 0.1 }}
-              className="text-black border border-gray-200 rounded-xl shadow-md overflow-hidden flex flex-col bg-white"
-            >
-              {/* Placeholder Image */}
-              <div className="h-40 sm:h-56 md:h-64 overflow-hidden flex items-center justify-center bg-gray-100">
-                <span className="text-gray-400 text-xs sm:text-sm">Image Here</span>
-              </div>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 
+                      grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+        {loading ? (
+          <p className="col-span-full text-center text-gray-500">Loading Daily Wear items...</p>
+        ) : dailyWearItems.length === 0 ? (
+          <p className="col-span-full text-center text-gray-500">No Daily Wear products found.</p>
+        ) : (
+          dailyWearItems.map((item, index) => (
+           <motion.div
+  key={item.id}
+  className="border border-gray-300 rounded-lg overflow-hidden bg-white text-black shadow-sm"
+  initial={{ opacity: 0, y: 30 }}
+  whileInView={{ opacity: 1, y: 0 }}
+  viewport={{ once: true, amount: 0.2 }}
+  transition={{ duration: 0.6, delay: index * 0.1 }}
+>
+  {/* Image Section */}
+  <div className="w-full h-64 overflow-hidden relative">
+    {item.primary_image?.image ? (
+      <img
+        src={`http://91.108.105.41:8000${item.primary_image.image}`}
+        alt={item.name}
+        className="w-full h-full object-cover"
+      />
+    ) : (
+      <span className="absolute inset-0 flex items-center justify-center text-gray-400 text-sm bg-gray-100">
+        No Image
+      </span>
+    )}
 
-              <div className="p-3 sm:p-4 flex flex-col flex-1 justify-between">
-                <div className="flex justify-between items-center">
-                  <span className="font-medium text-xs sm:text-sm md:text-base">
-                    {item.metal}
-                  </span>
-                  <span className="font-bold text-xs sm:text-sm md:text-base">
-                    {item.price}
-                  </span>
-                </div>
-                <h3 className="text-sm sm:text-base md:text-sm font-medium mt-2">
-                  {item.name}
-                </h3>
+    {/* Discount Badge */}
+    {item.discount_percentage > 0 && (
+      <span className="absolute top-2 left-2 bg-red-600 text-white text-xs px-2 py-1 rounded">
+        {item.discount_percentage.toFixed(0)}% OFF
+      </span>
+    )}
+  </div>
 
-                <button className="mt-3 sm:mt-4 px-3 py-1.5 sm:px-4 sm:py-2 bg-black text-white text-xs sm:text-sm font-medium rounded-lg hover:bg-gray-900 transition">
-                  Add to Cart
-                </button>
-              </div>
-            </motion.div>
-          ))}
-        </div>
-      </Link>
+  {/* Product Info */}
+  <div className="p-3 flex flex-col justify-between h-32">
+    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-1">
+      <h3 className="font-semibold text-gray-900 text-sm sm:text-base">{item.name}</h3>
+      <div className="flex items-center gap-2 mt-1 sm:mt-0">
+        <span className="font-bold text-gray-900 text-sm sm:text-base">₹{item.current_price}</span>
+        {parseFloat(item.base_price) > item.current_price && (
+          <span className="text-gray-500 text-xs sm:text-sm line-through">₹{item.base_price}</span>
+        )}
+      </div>
+    </div>
+
+    <p className="text-gray-600 text-xs sm:text-sm mb-3 line-clamp-2">
+      {item.short_description || "Elegant jewellery to enhance your style."}
+    </p>
+
+    <button
+      className="w-full bg-black text-white text-sm px-2 py-2 rounded-md hover:bg-gray-800 transition"
+      onClick={() => console.log(`Added ${item.name} to cart`)}
+    >
+      Add to Cart
+    </button>
+  </div>
+</motion.div>
+
+          ))
+        )}
+      </div>
 
       <Footer />
     </div>

@@ -1,17 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Header from "../Components/Header";
 import Footer from "../Components/Footer";
-// import banner from "../assets/Images/jewellery-earring-banner.png"; // Banner image
 import { Link } from "react-router-dom";
-import Earing from "../assets/Images/Mask group (4).png"
-
-const earrings = [
-  { id: 1, name: "Classic Stud Earrings", price: "₹1,500", metal: "Gold", image: Earing },
-  { id: 2, name: "Elegant Hoop Earrings", price: "₹2,200", metal: "Silver", image: Earing },
-  { id: 3, name: "Modern Drop Earrings", price: "₹1,800", metal: "Rose Gold", image: Earing },
-  { id: 4, name: "Vintage Chandbali Earrings", price: "₹2,500", metal: "Gold", image: Earing },
-];
 
 const filterOptions = {
   "Product type": ["Earring", "Ring", "Necklace", "Bracelet"],
@@ -24,7 +15,27 @@ const filterOptions = {
 };
 
 const EarringsCollection = () => {
+  const [earrings, setEarrings] = useState([]);
   const [openDropdown, setOpenDropdown] = useState(null);
+
+  useEffect(() => {
+    // Fetch products from API
+    const fetchEarrings = async () => {
+      try {
+        const res = await fetch("http://91.108.105.41:8000/api/products/");
+        const data = await res.json();
+        // Filter only earrings
+        const earingProducts = data.results.filter(
+          (item) => item.category_name.toLowerCase() === "earing"
+        );
+        setEarrings(earingProducts);
+      } catch (err) {
+        console.error("Error fetching products:", err);
+      }
+    };
+
+    fetchEarrings();
+  }, []);
 
   const toggleDropdown = (name) => {
     setOpenDropdown(openDropdown === name ? null : name);
@@ -93,37 +104,58 @@ const EarringsCollection = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 
                         grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
           {earrings.map((earring, index) => (
-            <motion.div
-              key={earring.id}
-              initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: false, amount: 0.2 }}
-              transition={{ duration: 0.6, delay: index * 0.1 }}
-              className="text-black border border-gray-200 rounded-xl shadow-md overflow-hidden flex flex-col bg-white"
-            >
-              {/* Placeholder Image */}
-              <div className="h-40 sm:h-56 md:h-64 overflow-hidden flex items-center justify-center bg-gray-100">
-                <img src={earring.image}></img>
-              </div>
+           <motion.div
+  key={earring.id}
+  className="border border-gray-300 rounded-lg overflow-hidden bg-white text-black shadow-sm"
+  initial={{ opacity: 0, y: 30 }}
+  whileInView={{ opacity: 1, y: 0 }}
+  viewport={{ once: true, amount: 0.2 }}
+  transition={{ duration: 0.6, delay: index * 0.1 }}
+>
+  {/* Image */}
+  <div className="w-full h-56 overflow-hidden relative">
+    <img
+      src={
+        earring.primary_image && earring.primary_image.image
+          ? `http://91.108.105.41:8000${earring.primary_image.image}`
+          : "/fallback-image.png"
+      }
+      alt={earring.name}
+      className="w-full h-full object-cover"
+    />
+    {/* Optional Discount Badge */}
+    {earring.discount_percentage > 0 && (
+      <span className="absolute top-2 left-2 bg-red-600 text-white text-xs px-2 py-1 rounded">
+        {earring.discount_percentage.toFixed(0)}% OFF
+      </span>
+    )}
+  </div>
 
-              <div className="p-3 sm:p-4 flex flex-col flex-1 justify-between">
-                <div className="flex justify-between items-center">
-                  <span className="font-medium text-xs sm:text-sm md:text-base">
-                    {earring.metal}
-                  </span>
-                  <span className="font-bold text-xs sm:text-sm md:text-base">
-                    {earring.price}
-                  </span>
-                </div>
-                <h3 className="text-sm sm:text-base md:text-sm font-medium mt-2">
-                  {earring.name}
-                </h3>
+  {/* Content */}
+  <div className="p-3 flex flex-col justify-between h-36">
+    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-1">
+      <h3 className="font-semibold text-gray-900 text-sm sm:text-base">{earring.name}</h3>
+      <div className="flex items-center gap-2 mt-1 sm:mt-0">
+        <span className="font-bold text-gray-900 text-sm sm:text-base">₹{earring.current_price}</span>
+        {parseFloat(earring.base_price) > earring.current_price && (
+          <span className="text-gray-500 text-xs sm:text-sm line-through">₹{earring.base_price}</span>
+        )}
+      </div>
+    </div>
 
-                <button className="mt-3 sm:mt-4 px-3 py-1.5 sm:px-4 sm:py-2 bg-black text-white text-xs sm:text-sm font-medium rounded-lg hover:bg-gray-900 transition">
-                  Add to Cart
-                </button>
-              </div>
-            </motion.div>
+    <p className="text-gray-600 text-xs sm:text-sm mb-3 line-clamp-2">
+      {earring.short_description || "Elegant jewellery to enhance your style."}
+    </p>
+
+    <button
+      className="w-full bg-black text-white text-sm px-2 py-2 rounded-md hover:bg-gray-800 transition"
+      onClick={() => console.log(`Added ${earring.name} to cart`)}
+    >
+      Add to Cart
+    </button>
+  </div>
+           </motion.div>
+
           ))}
         </div>
       </Link>
@@ -133,4 +165,4 @@ const EarringsCollection = () => {
   );
 };
 
-export default EarringsCollection;  
+export default EarringsCollection;

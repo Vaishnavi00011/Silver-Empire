@@ -3,16 +3,19 @@ import { FaFacebookF, FaInstagram, FaWhatsapp } from 'react-icons/fa';
 import { GrMail } from 'react-icons/gr';
 import { PiYoutubeLogoLight } from 'react-icons/pi';
 import { TfiClose } from 'react-icons/tfi';
-import Logo from "../assets/Logo/PNG-01-01-e1741102611213 (1) 1.png"
+import Logo from "../assets/Logo/PNG-01-01-e1741102611213 (1) 1.png";
 
 const Footer = () => {
   return (
-    <footer className="bg-black text-white pt-16 pb-6 font-sans relative overflow-x-hidden">
+    <footer className="bg-black text-white pt-16 pb-6 font-sans lg:mt-28 mt-14 relative overflow-x-hidden">
 
-      {/* Wave Shape */}
+      {/* --------------------- Desktop Clip-Path Wave Shape --------------------- */}
       <div
-        className="absolute top-0 left-0 w-full h-16 overflow-hidden z-0"
-        style={{ clipPath: 'polygon(0 0, 100% 0, 100% 80%, 75% 30%, 50% 80%, 25% 30%, 0% 80%)', backgroundColor: 'white' }}
+        className="hidden md:block absolute top-0 left-0 w-full h-16 overflow-hidden z-0"
+        style={{
+          clipPath: 'polygon(0 0, 100% 0, 100% 80%, 75% 30%, 50% 80%, 25% 30%, 0% 80%)',
+          backgroundColor: 'white'
+        }}
       ></div>
 
       <div className="container mx-auto px-6 md:px-12 lg:px-24 relative z-10">
